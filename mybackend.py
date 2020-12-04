@@ -65,6 +65,7 @@ class Database:
         query = """SELECT * FROM BikeShare WHERE StartStationName =? AND TripDuration<=?"""
         values = [start_location, time_duration]
         results = self.cursor.execute(query, values)
+        self.conn.close()
         return self.pick_best_k(results, k)
 
     def pick_best_k(self,results, k):
