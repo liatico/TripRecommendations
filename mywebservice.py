@@ -7,6 +7,8 @@ database = mybackend.Database()
 
 @app.route('/search/<startlocation>/<timeduration>/<k>',methods = ['GET'])
 def search(startlocation, timeduration, k):
+   if startlocation.find('+'):
+      startlocation = startlocation.replace('+', ' ')
    return jsonify(database.search(startlocation, timeduration, k)) # use redirect?
 
 

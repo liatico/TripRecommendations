@@ -12,20 +12,17 @@ class Database:
             Path('database.db').touch()
             # load csv file
             self.load_csv_file(sqlite3.connect('database.db'),'BikeShare.csv')
-        self.conn = None
+        self.conn = sqlite3.connect('database.db')
 
     @property
     def connect(self):
-        if self.conn is None:
-            self.conn = sqlite3.connect('database.db')
+        self.conn = sqlite3.connect('database.db')
         return self.conn
 
     @property
     def cursor(self):
-        if self.conn is None:
-            return self.connect.cursor()
-        else:
-            return self.conn.cursor()
+        return self.connect.cursor()
+
 
     def load_csv_file(self, conn, csv_path):
         self.cursor.execute('''CREATE TABLE BikeShare (TripDuration int, StartTime timestamp, StopTime timestamp,
@@ -35,7 +32,7 @@ class Database:
                                         UserType text, BirthYear int, Gender int, TripDurationinmin int)''')
         csv_data = pd.read_csv(csv_path)
         csv_data.to_sql('BikeShare', conn, if_exists='append', index=False)
-        self.conn.close()
+        conn.commit()
 
     # insert query
     def insert_new_entry(self,trip_duration, start_time, stop_time,
@@ -55,22 +52,34 @@ class Database:
                         UserType, BirthYear, Gender, TripDurationinmin) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'''
             self.cursor.executemany(query, values)
-            self.conn.close()
+            self.conn.commit()
         except ConnectionError:
             print(ConnectionError.strerror)
         
 
     # select query
-    def search(self, start_location, time_duration, k):
-        query = """SELECT * FROM BikeShare WHERE StartStationName =? AND TripDuration<=?"""
+    def search(self, start_location, time_duration, k, for_gui=False):
+        query = """SELECT * FROM BikeShare WHERE StartStationName =? AND TripDuration <=?"""
         values = [start_location, time_duration]
         results = self.cursor.execute(query, values)
-        self.conn.close()
-        return self.pick_best_k(results, k)
-
-    def pick_best_k(self,results, k):
-        # count how many times the destination is retreved and rank accordingly
+        self.conn.commit()
+        # count how many times the destination is retrieved and rank accordingly
         # return best k
+        ranked_results = self.rank(results)
+        best_k = list(islice(ranked_results.items(), k))
+        if for_gui:
+            return best_k
+        return self.pick_best_k(best_k)
+
+
+    def pick_best_k(self,best_k):
+        best_k_list = []
+        for item in best_k:
+            best_k_list.append(item[0])
+        return best_k_list
+
+
+    def rank(self, results):
         destination = {}
         for res in results:
             dest = res[8]
@@ -78,12 +87,8 @@ class Database:
                 destination[dest] = 1
             else:
                 destination[dest] += 1
-        destination = dict(sorted(destination.items(), key=lambda item: item[1],reverse=True))
-        best_k = list(islice(destination.items(), k))
-        best_k_list = []
-        for item in best_k:
-            best_k_list.append(item[0])
-        return best_k_list
+        return dict(sorted(destination.items(), key=lambda item: item[1], reverse=True))
+
 
 
 
@@ -93,4 +98,4 @@ if __name__ == '__main__':
     # c = db.cursor
     # print(c.execute('''SELECT * FROM BikeShare''').fetchall())
     # db.insert_new_entry(649,'31/03/2017 23:25',	'31/03/2017 23:36',	3185, 'City Hall', 40.7177325, -74.043845, 3190, 'Garfield Ave Station', 40.71046702, -74.0700388, 26200, 'Subscriber',1988,1,11)
-    print(db.search('Christ Hospital', 376, 6))
+    print(db.search('Christ Hospital', 376, 6, True))
