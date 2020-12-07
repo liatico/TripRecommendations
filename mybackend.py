@@ -59,7 +59,7 @@ class Database:
 
     # select query
     def search(self, start_location, time_duration, k, for_gui=False):
-        query = """SELECT * FROM BikeShare WHERE StartStationName =? AND TripDuration <=?"""
+        query = """SELECT * FROM BikeShare WHERE StartStationName =? AND TripDurationinmin <=?"""
         values = [start_location, time_duration]
         results = self.cursor.execute(query, values)
         self.conn.commit()
@@ -83,11 +83,12 @@ class Database:
         destination = {}
         for res in results:
             dest = res[8]
+            duration_in_min = res[-1]
             if not dest in destination.keys():
-                destination[dest] = 1
+                destination[dest] = [duration_in_min, 1]
             else:
-                destination[dest] += 1
-        return dict(sorted(destination.items(), key=lambda item: item[1], reverse=True))
+                destination[dest][1] += 1
+        return dict(sorted(destination.items(), key=lambda item: item[1][1], reverse=True))
 
 
 
@@ -98,4 +99,4 @@ if __name__ == '__main__':
     # c = db.cursor
     # print(c.execute('''SELECT * FROM BikeShare''').fetchall())
     # db.insert_new_entry(649,'31/03/2017 23:25',	'31/03/2017 23:36',	3185, 'City Hall', 40.7177325, -74.043845, 3190, 'Garfield Ave Station', 40.71046702, -74.0700388, 26200, 'Subscriber',1988,1,11)
-    print(db.search('Christ Hospital', 376, 6, True))
+    print(db.search('Christ Hospital', 6, 3, True))
