@@ -1,0 +1,170 @@
+# Filename: main.kv
+
+
+<MainGrid>:
+
+    location: location
+    duration: duration
+    recommendations: recommendations
+    sort_Location: sort_Location
+    sort_Duration: sort_Duration
+    sort_Recommendations: sort_Recommendations
+    submit: submit
+    reset: reset
+
+    cols:1
+    padding: 40
+
+    BoxLayout:
+        size_hint_y: None
+        height: 50
+        orientation: 'horizontal'
+        spacing:40
+
+
+        Image:
+            id: imageView
+            source: 'bike.jpg'
+            allow_stretch: False
+            size_hint:None, None
+            height:80
+            width:80
+
+        Label:
+            text:"Search a Travel\n"
+            size_hint_y: None
+            height: 30
+            font_size: 36
+            color: 0,0,0,1
+            bold: True
+
+
+        Label:
+            text: "Reco\nTravel"
+            size_hint: None,None
+            font_size: 20
+            color: 0,0,0,1
+            height: 60
+            width:60
+            halign:"center"
+            valign:"middle"
+
+    Widget:
+        size_hint_y: None
+        thickness: 3
+        margin: 2
+        height: self.thickness + 2 * self.margin
+        color: 0., .0, .0
+        canvas:
+            Color:
+                rgb: self.color
+            Rectangle:
+                pos: self.x + self.margin, self.y + self.margin + 1
+                size: self.width - 2 * self.margin , self.thickness
+
+
+    Label:
+        text: ""
+        size_hint_y: None
+        height: 20
+        thickness:3
+        color: 0,0,0,1
+    GridLayout:
+        cols:2
+        spacing:50
+
+        row_default_height: 35
+        row_force_default: True
+
+        Label:
+            text:"Current Location"
+            font_size: 18
+            color: 0,0,0,1
+
+        TextInput:
+            id: location
+
+        Label:
+            text:"Duration (Minutes)"
+            font_size: 18
+            color: 0,0,0,1
+
+
+        TextInput:
+            id: duration
+
+
+        Label:
+            text:"Amount of recommendations"
+            font_size: 18
+            color: 0,0,0,1
+
+        TextInput:
+            id: recommendations
+
+
+        Label:
+            text:"Sort By"
+            font_size: 18
+            color: 0,0,0,1
+
+        BoxLayout:
+            size_hint_y: None
+            orientation: 'horizontal'
+            height:80
+            spacing:10
+
+            ToggleButton:
+                id: sort_Location
+                group: "sorting"
+                text: 'Location'
+                height: 35
+                size_hint_y: None
+                background_color: (225/255, 225/255, 250/255, 0.6)
+                color: 0,0,0,1
+
+            ToggleButton:
+                id: sort_Duration
+                group: "sorting"
+                text: 'Duration'
+                size_hint: None, None
+                size: 80, 35
+                background_color: (225/255, 225/255, 250/255, 0.6)
+                color: 0,0,0,1
+
+
+            ToggleButton:
+                id: sort_Recommendations
+                group: "sorting"
+                text: 'Recommendations'
+                size_hint: None, None
+                size: 150, 35
+                background_color: (225/255, 225/255, 250/255, 0.6)
+                color: 0,0,0,1
+
+
+    BoxLayout:
+        size_hint_y: None
+        height: 120
+        orientation: 'vertical'
+        spacing: 20
+
+        Button:
+            id: submit
+            text: "Search"
+            height:50
+            background_color: (15/255, 60/255, 135/255, 1.0)
+            font_size: 22
+            bold: True
+
+        Button:
+            id: reset
+            text: "Reset"
+            height:50
+            background_color: (15/255, 60/255, 135/255, 1.0)
+            font_size: 22
+            bold: True
+
+
+
+
