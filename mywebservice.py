@@ -9,7 +9,8 @@ database = mybackend.Database()
 def search(startlocation, timeduration, k):
    if startlocation.find('+'):
       startlocation = startlocation.replace('+', ' ')
-   return jsonify(database.search(startlocation, timeduration, k)) # use redirect?
+   res = database.search(startlocation, timeduration, k)
+   return jsonify(res) # use redirect?
 
 
 if __name__ == '__main__':
