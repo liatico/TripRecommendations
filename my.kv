@@ -23,7 +23,7 @@
         orientation: 'horizontal'
         spacing:40
 
-
+        # Logo
         Image:
             id: imageView
             source: 'bike.jpg'
@@ -32,6 +32,7 @@
             height:80
             width:80
 
+        # Title
         Label:
             text:"Search a Travel\n"
             size_hint_y: None
@@ -40,7 +41,7 @@
             color: 0,0,0,1
             bold: True
 
-
+        # Name
         Label:
             text: "Reco\nTravel"
             size_hint: None,None
@@ -51,6 +52,7 @@
             halign:"center"
             valign:"middle"
 
+    # Horizontal seperator
     Widget:
         size_hint_y: None
         thickness: 3
@@ -64,17 +66,18 @@
                 pos: self.x + self.margin, self.y + self.margin + 1
                 size: self.width - 2 * self.margin , self.thickness
 
-
+    # Spacing
     Label:
         text: ""
         size_hint_y: None
         height: 20
         thickness:3
         color: 0,0,0,1
+
+    # Fields grid
     GridLayout:
         cols:2
         spacing:50
-
         row_default_height: 35
         row_force_default: True
 
@@ -85,17 +88,15 @@
 
         TextInput:
             id: location
-            text: "Christ Hospital"
+            text: ""
 
         Label:
             text:"Duration (Minutes)"
             font_size: 18
             color: 0,0,0,1
 
-
         TextInput:
             id: duration
-
 
         Label:
             text:"Num of Results"
@@ -105,12 +106,12 @@
         TextInput:
             id: recommendations
 
-
         Label:
             text:"Sort By"
             font_size: 18
             color: 0,0,0,1
 
+        # Sort type
         BoxLayout:
             size_hint_y: None
             orientation: 'horizontal'
@@ -146,6 +147,7 @@
                 color: 0,0,0,1
 
 
+    # Bottom first box
     BoxLayout:
         size_hint_y: None
         height: 120
@@ -160,6 +162,7 @@
             font_size: 22
             bold: True
 
+        # Bottom second box
         BoxLayout:
             size_hint_y: None
             height: 50

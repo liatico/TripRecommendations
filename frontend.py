@@ -8,7 +8,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
-
+from kivy.config import Config
 from kivy.properties import ObjectProperty
 from mybackend import Database
 
@@ -155,61 +155,64 @@ class MainGrid(GridLayout):
             # Searching for recommendations
             results = self.db.search(loc_text, int(dur_text), int(rec_text), True)
 
-            # Last search
-            self.last_search_location = loc_text
-            self.last_search_duration = dur_text
-            self.last_search_recommendations = rec_text
-
-            # Sort by Location
-            if self.sort_Location.state == "down":
-                self.sortedBy = "Location"
-                results.sort(key=lambda tup: tup[0])
-
-            # Sort by Duration
-            elif self.sort_Duration.state == "down":
-                self.sortedBy = "Duration"
-                results.sort(key=lambda tup: tup[1][0])
-
-            # Sort by Recommendations
-            elif self.sort_Recommendations.state == "down":
-                self.sortedBy = "Recommendations"
-                results.sort(key=lambda tup: tup[1][1], reverse=True)
-
-            # Unsorted
+            if len(results) == 1 and type(results[0]) == int and results[0] == -1:
+                self.popup_error(instance, "Error", "Can not connect to Database")
             else:
-                self.sortedBy = "Unsorted"
-                random.shuffle(results)
+                # Last search
+                self.last_search_location = loc_text
+                self.last_search_duration = dur_text
+                self.last_search_recommendations = rec_text
 
-            curr_results_list = []
-            results_len = len(results)
+                # Sort by Location
+                if self.sort_Location.state == "down":
+                    self.sortedBy = "Location"
+                    results.sort(key=lambda tup: tup[0])
 
-            # If needed more than 1 popup for results
-            if len(results) > self.max_results_in_popup:
-                # While there are results left
-                while len(results) != 0:
-                    curr_results = results[0:self.max_results_in_popup]
-                    curr_results_list.insert(0, curr_results)
-                    results = results[self.max_results_in_popup:]
+                # Sort by Duration
+                elif self.sort_Duration.state == "down":
+                    self.sortedBy = "Duration"
+                    results.sort(key=lambda tup: tup[1][0])
 
-                # Shows popup for each group in reversed order
-                for res in curr_results_list:
-                    results_len = results_len - len(res)
-                    # Checks if it is the last popup to change button's text
-                    if curr_results_list[0] == res:
-                        self.popup_content(instance, res, results_len, "Done")
-                    else:
-                        self.popup_content(instance, res, results_len, "Next")
+                # Sort by Recommendations
+                elif self.sort_Recommendations.state == "down":
+                    self.sortedBy = "Recommendations"
+                    results.sort(key=lambda tup: tup[1][1], reverse=True)
 
-            # If needed only one popup
-            elif len(results) > 0:
-                self.popup_content(instance, results, 0, "Done")
+                # Unsorted
+                else:
+                    self.sortedBy = "Unsorted"
+                    random.shuffle(results)
 
-            # No Results found
-            else:
-                self.popup_error(instance, "Error", "No results founds")
+                curr_results_list = []
+                results_len = len(results)
 
-            # Reset fields after submit pressed
-            self.reset_pressed(instance)
+                # If needed more than 1 popup for results
+                if len(results) > self.max_results_in_popup:
+                    # While there are results left
+                    while len(results) != 0:
+                        curr_results = results[0:self.max_results_in_popup]
+                        curr_results_list.insert(0, curr_results)
+                        results = results[self.max_results_in_popup:]
+
+                    # Shows popup for each group in reversed order
+                    for res in curr_results_list:
+                        results_len = results_len - len(res)
+                        # Checks if it is the last popup to change button's text
+                        if curr_results_list[0] == res:
+                            self.popup_content(instance, res, results_len, "Done")
+                        else:
+                            self.popup_content(instance, res, results_len, "Next")
+
+                # If needed only one popup
+                elif len(results) > 0:
+                    self.popup_content(instance, results, 0, "Done")
+
+                # No Results found
+                else:
+                    self.popup_error(instance, "Error", "No results founds")
+
+                # Reset fields after submit pressed
+                self.reset_pressed(instance)
 
     # Shows error popup
     def popup_error(self, obj, title, content, popup_size=500):
@@ -295,7 +298,7 @@ class MyApp(App):
     def build(self):
         self.title = 'RecoTravel'
         Window.clearcolor = (180/255, 220/255, 215/255, 1)
-
+        self.icon = 'icon.ico'
         return MainGrid()
 
 
