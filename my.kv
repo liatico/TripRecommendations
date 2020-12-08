@@ -1,6 +1,6 @@
 # Filename: main.kv
 
-
+# Main grid
 <MainGrid>:
 
     location: location
@@ -11,10 +11,12 @@
     sort_Recommendations: sort_Recommendations
     submit: submit
     reset: reset
+    last_search: last_search
 
     cols:1
     padding: 40
 
+    # Headers box
     BoxLayout:
         size_hint_y: None
         height: 50
@@ -83,6 +85,7 @@
 
         TextInput:
             id: location
+            text: "Christ Hospital"
 
         Label:
             text:"Duration (Minutes)"
@@ -95,7 +98,7 @@
 
 
         Label:
-            text:"Amount of recommendations"
+            text:"Num of Results"
             font_size: 18
             color: 0,0,0,1
 
@@ -157,13 +160,27 @@
             font_size: 22
             bold: True
 
-        Button:
-            id: reset
-            text: "Reset"
-            height:50
-            background_color: (15/255, 60/255, 135/255, 1.0)
-            font_size: 22
-            bold: True
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            orientation: 'horizontal'
+            spacing: 20
+
+            Button:
+                id: reset
+                text: "Reset"
+                height:50
+                background_color: (15/255, 60/255, 135/255, 1.0)
+                font_size: 22
+                bold: True
+
+            Button:
+                id: last_search
+                text: "Last Search"
+                height:50
+                background_color: (15/255, 60/255, 135/255, 1.0)
+                font_size: 22
+                bold: True
 
 
 

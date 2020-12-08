@@ -66,7 +66,9 @@ class Database:
         # count how many times the destination is retrieved and rank accordingly
         # return best k
         ranked_results = self.rank(results)
-        best_k = list(islice(ranked_results.items(), k))
+
+        best_k = list(islice(ranked_results.items(), int(k)))
+
         if for_gui:
             return best_k
         return self.pick_best_k(best_k)
