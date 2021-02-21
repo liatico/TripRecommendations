@@ -1,4 +1,4 @@
-# Assingment2
+# Bike trip recommendations
 Authors:
 	Liat Cohen		liatico77@gmail.com
 	Adir Biran		adir.biran@gmail.com
